@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小敬书阁 - 开启你的阅读之旅</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for elegant typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fdfaf6;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Noto Serif SC', serif;
+        }
+        .hero-bg {
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+        #chat-window::-webkit-scrollbar, #modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        #chat-window::-webkit-scrollbar-track, #modal-content::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        #chat-window::-webkit-scrollbar-thumb, #modal-content::-webkit-scrollbar-thumb {
+            background-color: #d1d5db;
+            border-radius: 20px;
+        }
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        html.modal-active {
+            overflow: hidden;
+        }
+        .progress-bar {
+            background-color: #f3f3f3;
+            border-radius: 10px;
+            height: 8px;
+            width: 100%;
+            overflow: hidden;
+        }
+        .progress-bar-inner {
+            background-color: #f59e0b; /* amber-500 */
+            height: 100%;
+            width: 0;
+            border-radius: 10px;
+            transition: width 0.5s ease-out;
+        }
+        /* Loading Spinner */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #f59e0b;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-gray-800">
+                <span class="font-serif">📚 小敬书阁</span>
+            </a>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#" class="text-gray-600 hover:text-amber-700">首页</a>
+                <a href="#personalized-recs" class="text-gray-600 hover:text-amber-700">个性推荐</a>
+                <a href="#recommendations" class="text-gray-600 hover:text-amber-700">自动推荐</a>
+                <a href="#notes" class="text-gray-600 hover:text-amber-700">AI解读</a>
+                <a href="#ai-assistant" class="text-gray-600 hover:text-amber-700">AI助手</a>
+            </nav>
+            <button class="md:hidden" id="mobile-menu-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+             <a href="#" class="block py-2 text-gray-600 hover:text-amber-700">首页</a>
+             <a href="#personalized-recs" class="block py-2 text-gray-600 hover:text-amber-700">个性推荐</a>
+             <a href="#recommendations" class="block py-2 text-gray-600 hover:text-amber-700">自动推荐</a>
+             <a href="#notes" class="block py-2 text-gray-600 hover:text-amber-700">AI解读</a>
+             <a href="#ai-assistant" class="block py-2 text-gray-600 hover:text-amber-700">AI助手</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-bg text-white">
+            <div class="container mx-auto px-6 py-32 md:py-48 text-center md:text-left">
+                <h1 class="text-4xl md:text-6xl font-bold leading-tight">开启你的阅读之旅</h1>
+                <p class="mt-4 text-lg md:text-xl max-w-2xl">在文字的海洋中，发现未知的世界，遇见更好的自己。</p>
+                <a href="#personalized-recs" class="mt-8 inline-block bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-transform transform hover:scale-105">
+                    探索书海
+                </a>
+            </div>
+        </section>
+
+        <!-- AI Personalized Recommendations Section -->
+        <section id="personalized-recs" class="py-16 md:py-24 bg-amber-50">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">✨ AI个性化推荐</h2>
+                <p class="text-gray-600 mb-8 max-w-2xl mx-auto">告诉我你喜欢什么（比如“喜欢凡尔纳的科幻冒险小说”或“想找一本关于宋代历史的轻松读物”），我会为你找到下一本好书。</p>
+                <div class="max-w-2xl mx-auto">
+                    <button id="rec-button" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-transform transform hover:scale-105">
+                        <span>点我，开始个性化推荐</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Auto-generated Books Section -->
+        <section id="recommendations" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-center sm:text-left mb-4 sm:mb-0">AI自动推荐</h2>
+                    <button id="refresh-recs-button" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-6 rounded-lg flex items-center gap-2 transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-wait">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-refresh-cw"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
+                        <span>换一批推荐 (12本)</span>
+                    </button>
+                </div>
+                <div id="auto-recs-loader" class="flex justify-center items-center py-10">
+                     <div class="loader"></div>
+                </div>
+                <div id="auto-recs-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- AI generated book cards will be injected here -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Quote Section -->
+        <section class="bg-amber-50">
+             <div class="container mx-auto px-6 py-20 text-center">
+                 <h3 class="text-2xl md:text-3xl italic text-gray-700 max-w-3xl mx-auto">
+                     “立身以立学为先，立学以读书为本。”
+                 </h3>
+                 <p class="mt-4 text-gray-600">— 欧阳修</p>
+             </div>
+        </section>
+
+        <!-- Reading Notes Section -->
+        <section id="notes" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">AI深度解读</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Note Cards -->
+                    <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
+                        <div class="p-6">
+                            <h4 class="text-xl font-bold mb-2">《人类简史》中的三大革命</h4>
+                            <p class="text-gray-600 text-sm mb-4">从认知革命到科学革命，人类如何一步步成为地球的主宰？</p>
+                            <button class="note-button font-semibold text-amber-600 hover:text-amber-800" data-note-topic="深入分析《人类简史》中的认知革命、农业革命和科学革命对人类社会演化的影响。">阅读全文 &rarr;</button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
+                        <div class="p-6">
+                            <h4 class="text-xl font-bold mb-2">论《围城》的讽刺艺术</h4>
+                            <p class="text-gray-600 text-sm mb-4">婚姻是围城，职业是围城，人生又何尝不是一座巨大的围城？</p>
+                            <button class="note-button font-semibold text-amber-600 hover:text-amber-800" data-note-topic="请详细论述钱钟书在《围城》中如何运用讽刺艺术，揭示当时知识分子的困境与人性的弱点。">阅读全文 &rarr;</button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
+                         <div class="p-6">
+                            <h4 class="text-xl font-bold mb-2">从《小王子》看成年人的世界</h4>
+                            <p class="text-gray-600 text-sm mb-4">“真正重要的东西，用眼睛是看不见的。” 这句话你真的读懂了吗？</p>
+                            <button class="note-button font-semibold text-amber-600 hover:text-amber-800" data-note-topic="请从《小王子》的视角，深度剖析作者对成年人世界中“重要东西”的看法，例如仪式感、责任与爱。">阅读全文 &rarr;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Assistant Section -->
+        <section id="ai-assistant" class="py-16 md:py-24 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">AI 读书助手</h2>
+                <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">对某本书的情节有疑问？想了解一位作家的生平？或者需要一些新的读书建议？随时问我！</p>
+                
+                <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-2xl overflow-hidden">
+                    <div id="chat-window" class="p-6 h-96 overflow-y-auto space-y-4">
+                        <div class="flex items-start gap-3">
+                            <span class="flex-shrink-0 inline-flex items-center justify-center h-10 w-10 rounded-full bg-amber-100 text-amber-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+                            </span>
+                            <div class="bg-gray-100 p-3 rounded-r-lg rounded-bl-lg">
+                                <p class="text-sm">你好！我是书阁小灵，你的专属读书助手。有什么可以帮你的吗？</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 bg-gray-100 border-t border-gray-200 flex items-center">
+                        <input type="text" id="user-input" placeholder="输入你的问题..." class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <button id="send-button" class="ml-4 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-lg flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 3 3 9-3 9 19-9Z"/><path d="M6 12h16"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+                <div>
+                    <h4 class="text-lg font-bold mb-4">小敬书阁</h4>
+                    <p class="text-gray-400">一个分享阅读、交流思想的纯净之地。</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">快速链接</h4>
+                    <ul>
+                        <li><a href="#personalized-recs" class="text-gray-400 hover:text-white">个性推荐</a></li>
+                        <li><a href="#notes" class="text-gray-400 hover:text-white">AI解读</a></li>
+                        <li><a href="#ai-assistant" class="text-gray-400 hover:text-white">AI助手</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">关注我们</h4>
+                    <div class="flex justify-center md:justify-start space-x-4">
+                         <a href="#" class="text-gray-400 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 1.4 3.3 4.9 3.3 4.9s-1.4-1.2-2.8-1.2c-.7 2.3-2.5 4.1-5 4.1-2.2 0-4-1.2-4.6-2.3-1.6 1.6-4.4 3.4-8.6 1.6 0 0 4.9 5.7 11.3 5.7 6.3 0 11-4.5 11-10.2 0-.2 0-.4 0-.6 1-1.1 1.8-2.2 2.4-3.4z"/></svg></a>
+                         <a href="#" class="text-gray-400 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-gray-700 pt-8 text-center text-gray-500">
+                &copy; 2025 小敬书阁. 保留所有权利.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Reusable AI Modal -->
+    <div id="ai-modal" class="modal pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center opacity-0 z-50">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+        <div class="modal-container bg-white w-11/12 md:max-w-2xl mx-auto rounded-xl shadow-lg z-50">
+            <div class="modal-content-wrapper py-4 text-left px-6">
+                <div class="flex justify-between items-center pb-3">
+                    <p id="modal-title" class="text-2xl font-bold font-serif">AI响应</p>
+                    <div id="modal-close" class="cursor-pointer z-50">
+                        <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18"><path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path></svg>
+                    </div>
+                </div>
+                <div id="modal-body" class="max-h-[60vh] overflow-y-auto">
+                     <div id="modal-input-area" class="hidden mb-4">
+                        <textarea id="modal-textarea" rows="3" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="在这里输入您的偏好..."></textarea>
+                     </div>
+                     <div id="modal-progress" class="hidden w-full">
+                        <div class="progress-bar">
+                            <div class="progress-bar-inner"></div>
+                        </div>
+                        <p class="text-center text-sm text-gray-600 mt-2">AI正在努力思考中，请稍候...</p>
+                     </div>
+                     <div id="modal-content" class="text-base prose max-w-none"></div>
+                </div>
+                <div class="flex justify-end pt-4">
+                    <button id="modal-action-button" class="hidden px-4 bg-amber-600 p-3 rounded-lg text-white hover:bg-amber-700">提交</button>
+                    <button id="modal-close-button" class="px-4 bg-gray-200 p-3 rounded-lg text-gray-800 hover:bg-gray-300 ml-2">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- Globals ---
+        const deepseekApiKey = "sk-3e21bcf0937a43daad2f62f8a7dbe125"; 
+        const deepseekApiUrl = "https://api.deepseek.com/chat/completions";
+
+        // --- DOM Elements ---
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const aiModal = document.getElementById('ai-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalContent = document.getElementById('modal-content');
+        const modalProgress = document.getElementById('modal-progress');
+        const modalInputArea = document.getElementById('modal-input-area');
+        const modalTextarea = document.getElementById('modal-textarea');
+        const modalActionButton = document.getElementById('modal-action-button');
+        const modalCloseButton = document.getElementById('modal-close-button');
+        const modalCloseIcon = document.getElementById('modal-close');
+        const modalOverlay = document.querySelector('.modal-overlay');
+        const autoRecsContainer = document.getElementById('auto-recs-container');
+        const refreshRecsButton = document.getElementById('refresh-recs-button');
+        const autoRecsLoader = document.getElementById('auto-recs-loader');
+
+        // --- Modal Control ---
+        function toggleModal(show, config = {}) {
+            const html = document.documentElement;
+            if (show) {
+                modalTitle.textContent = config.title || 'AI 响应';
+                modalContent.innerHTML = '';
+                modalProgress.classList.add('hidden');
+                modalInputArea.classList.add('hidden');
+                modalActionButton.classList.add('hidden');
+
+                if(config.showInput) {
+                    modalTextarea.value = ''; // Clear previous input
+                    modalInputArea.classList.remove('hidden');
+                    modalActionButton.classList.remove('hidden');
+                    modalActionButton.onclick = config.action;
+                }
+                
+                aiModal.classList.remove('pointer-events-none', 'opacity-0');
+                html.classList.add('modal-active');
+            } else {
+                aiModal.classList.add('pointer-events-none', 'opacity-0');
+                html.classList.remove('modal-active');
+            }
+        }
+        
+        modalCloseIcon.addEventListener('click', () => toggleModal(false));
+        modalCloseButton.addEventListener('click', () => toggleModal(false));
+        modalOverlay.addEventListener('click', () => toggleModal(false));
+
+        // --- API Call Logic ---
+        async function callApi(messages) {
+            try {
+                const response = await fetch(deepseekApiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${deepseekApiKey}` },
+                    body: JSON.stringify({ model: "deepseek-chat", messages: messages, stream: false })
+                });
+                if (!response.ok) throw new Error(`API Error: ${response.status}`);
+                const data = await response.json();
+                if (data.choices && data.choices[0].message.content) {
+                    return data.choices[0].message.content;
+                } else {
+                    throw new Error("Invalid API response format");
+                }
+            } catch (error) {
+                console.error("API Call Failed:", error);
+                return null;
+            }
+        }
+        
+        async function callApiWithProgress(messages) {
+            modalContent.innerHTML = '';
+            modalProgress.classList.remove('hidden');
+            const progressBarInner = modalProgress.querySelector('.progress-bar-inner');
+            progressBarInner.style.width = '0%';
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 5;
+                if (progress <= 90) {
+                     progressBarInner.style.width = `${progress}%`;
+                }
+            }, 200);
+            
+            const result = await callApi(messages);
+            clearInterval(interval);
+            progressBarInner.style.width = '100%';
+
+            setTimeout(() => { modalProgress.classList.add('hidden'); }, 500);
+
+            return result || `<p class="text-red-500">抱歉，请求失败，请稍后再试。</p>`;
+        }
+
+
+        // --- Event Delegation for Dynamic Content ---
+        document.body.addEventListener('click', async function(event) {
+            // Summary Button clicks
+            if (event.target.classList.contains('summary-button')) {
+                const card = event.target.closest('.book-card');
+                const title = card.querySelector('h3').textContent;
+                const author = card.querySelector('p.text-gray-600').textContent;
+                const description = card.querySelector('.book-description').textContent;
+
+                toggleModal(true, { title: `《${title}》 - AI总结` });
+                
+                const messages = [
+                    {role: "system", content: "你是一位技艺精湛的文学编辑，以能够精准提炼书籍精髓而闻名。你的任务是基于提供的书籍信息，撰写一篇详尽且引人入胜的内容摘要，字数不少于500字。这篇摘要需要巧妙地融合剧情梗概、核心角色剖析、深层主题探讨以及对作者写作风格的精妙评论，最终为读者呈现一个立体、丰富且深刻的文本全貌，激发其阅读兴趣。"},
+                    {role: "user", content: `请为这本书撰写一篇深度摘要。书名:《${title}》，作者:${author}。书籍简介：${description}`}
+                ];
+                
+                const summaryText = await callApiWithProgress(messages);
+                modalContent.innerHTML = `<p>${summaryText.replace(/\n/g, '<br>')}</p>`;
+            }
+        });
+
+
+        // --- Feature-Specific Logic ---
+
+        // Mobile Menu
+        mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+
+        // 1. Auto-generated Recommendations
+        async function fetchAutoRecommendations(count) {
+            autoRecsLoader.classList.remove('hidden');
+            autoRecsContainer.classList.add('hidden');
+            refreshRecsButton.disabled = true;
+
+            const messages = [
+                { role: "system", content: `你是一位经验丰富的“首席荐书官”，拥有一个庞大且多元的知识宝库。你的使命是为读者发掘那些跨越时间与类型的文学瑰宝。请精心挑选${count}本风格迥异的经典或遗珠之作。你必须严格按照JSON格式返回一个数组，数组中的每个对象都需包含三个键: 'title' (字符串), 'author' (字符串), 和 'description' (字符串, 一段至少50字的、充满洞见与吸引力的推荐语，点明该书的独特价值与魅力)。请确保返回内容只有纯粹的JSON，不包含任何额外的说明或标记。` },
+                { role: "user", content: `请开始推荐${count}本不容错过的书籍。` }
+            ];
+
+            const jsonString = await callApi(messages);
+
+            try {
+                if (!jsonString) throw new Error("API call returned null");
+                const cleanedJson = jsonString.replace(/```json/g, '').replace(/```/g, '').trim();
+                const books = JSON.parse(cleanedJson);
+                displayAutoRecommendations(books);
+            } catch (error) {
+                console.error("Failed to fetch or parse auto recommendations:", error);
+                autoRecsContainer.innerHTML = `<p class="col-span-full text-center text-red-500">无法加载推荐，请稍后重试。</p>`;
+            } finally {
+                autoRecsLoader.classList.add('hidden');
+                autoRecsContainer.classList.remove('hidden');
+                refreshRecsButton.disabled = false;
+            }
+        }
+        
+        function displayAutoRecommendations(books) {
+            autoRecsContainer.innerHTML = '';
+            books.forEach(book => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col book-card';
+                card.innerHTML = `
+                    <div class="flex-grow">
+                        <h3 class="text-xl font-bold mb-2">${book.title}</h3>
+                        <p class="text-gray-600 mb-4">${book.author}</p>
+                        <p class="text-sm text-gray-500 book-description">${book.description}</p>
+                    </div>
+                    <button class="summary-button mt-4 w-full bg-amber-100 text-amber-800 hover:bg-amber-200 font-semibold py-2 px-4 rounded-lg transition-colors duration-300">✨ AI一键总结</button>
+                `;
+                autoRecsContainer.appendChild(card);
+            });
+        }
+
+        refreshRecsButton.addEventListener('click', () => fetchAutoRecommendations(12));
+        fetchAutoRecommendations(8); // Initial load
+
+
+        // 2. Personalized Recommendations
+        document.getElementById('rec-button').addEventListener('click', () => {
+            const config = {
+                title: '✨ AI个性化推荐',
+                showInput: true,
+                action: async () => {
+                    const preference = modalTextarea.value.trim();
+                    if (!preference) {
+                        alert('请输入您的阅读偏好！');
+                        return;
+                    }
+                    modalInputArea.classList.add('hidden');
+                    modalActionButton.classList.add('hidden');
+                    
+                    const messages = [
+                        {role: "system", content: "你是一位极具洞察力的AI“书籍灵魂匹配师”。你的专长是精准捕捉读者的情感需求与智识好奇，并为其匹配最能触动心灵的读物。请根据用户提供的个人偏好，推荐3本书。对于每一本书，请撰写一段充满共情与智慧的推荐理由，篇幅不少于500字，深入阐述这本书为何能与用户的内心世界产生共鸣，它将带来怎样的情感体验与思想启迪。你必须严格以JSON格式返回一个数组，每个对象包含 'title', 'author', 和 'reason' 三个键，确保返回的是纯粹的JSON文本。"},
+                        {role: "user", content: `我的阅读偏好是: "${preference}"`}
+                    ];
+                    
+                    const jsonString = await callApiWithProgress(messages);
+                    
+                    try {
+                        const cleanedJson = jsonString.replace(/```json/g, '').replace(/```/g, '').trim();
+                        const recs = JSON.parse(cleanedJson);
+                        let html = '<div class="space-y-6">';
+                        recs.forEach(book => {
+                            html += `<div class="p-4 border rounded-lg"><strong>${book.title}</strong><p class="text-sm text-gray-500 mb-2">${book.author}</p><p>${book.reason.replace(/\n/g, '<br>')}</p></div>`;
+                        });
+                        html += '</div>';
+                        modalContent.innerHTML = html;
+                    } catch (e) {
+                         modalContent.innerHTML = `<p class="text-red-500">获取推荐时遇到格式问题，请稍后再试。</p><p class="text-xs text-gray-400 mt-2">原始数据: ${jsonString}</p>`;
+                    }
+                }
+            };
+            toggleModal(true, config);
+        });
+
+        // 3. AI Reading Notes
+        document.querySelectorAll('.note-button').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const card = e.target.closest('.p-6');
+                const title = card.querySelector('h4').textContent;
+                const topic = e.target.dataset.noteTopic;
+
+                toggleModal(true, { title: title });
+                
+                const messages = [
+                    {role: "system", content: "你是一位享誉国际的文学博士与思想评论家。你的分析以逻辑严谨、视野宏大、见解独到而著称。现在，请针对用户提出的议题，撰写一篇至少500字的深度分析文章。你的文章需要构建一个清晰的论证结构，提出一个核心论点，并运用文本细节、相关理论或跨学科知识进行支撑。请在保持学术严谨性的同时，使用优雅而晓畅的语言，引领读者进入一个深邃的思想世界。"},
+                    {role: "user", content: topic}
+                ];
+
+                const noteText = await callApiWithProgress(messages);
+                modalContent.innerHTML = `<p>${noteText.replace(/\n/g, '<br>')}</p>`;
+            });
+        });
+
+        // 4. AI Chat Assistant
+        const chatWindow = document.getElementById('chat-window');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+
+        let chatHistory = [{role: "system", content: "你是一个名为“书阁小灵”的AI读书助手，性格温暖、耐心且知识渊博。你的使命是成为用户最贴心的阅读伴侣，通过充满鼓励和启发性的对话，点燃他们对文学的热情。在回答问题时，请尽可能提供详尽、周到的解答，以拓展用户的知识边界。避免使用过于简短的回复，除非是进行快速确认。你的核心是营造一种轻松、愉悦且富有智识探索乐趣的交流氛围。"}];
+
+        function addChatMessage(role, text) {
+            const messageWrapper = document.createElement('div');
+            if (role === 'user') {
+                messageWrapper.innerHTML = `<div class="flex items-start gap-3 justify-end"><div class="bg-amber-500 text-white p-3 rounded-l-lg rounded-br-lg"><p class="text-sm">${text}</p></div><span class="flex-shrink-0 inline-flex items-center justify-center h-10 w-10 rounded-full bg-gray-200"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span></div>`;
+            } else { // assistant
+                 messageWrapper.innerHTML = `<div class="flex items-start gap-3"><span class="flex-shrink-0 inline-flex items-center justify-center h-10 w-10 rounded-full bg-amber-100 text-amber-700"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></span><div class="bg-gray-100 p-3 rounded-r-lg rounded-bl-lg"><p class="text-sm">${text}</p></div></div>`;
+            }
+            chatWindow.appendChild(messageWrapper);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+            return messageWrapper;
+        }
+
+        async function handleSendMessage() {
+            const userMessage = userInput.value.trim();
+            if (!userMessage) return;
+
+            addChatMessage('user', userMessage);
+            chatHistory.push({ role: "user", content: userMessage });
+            userInput.value = '';
+
+            const loadingMessage = addChatMessage('assistant', '...');
+            
+            try {
+                const newAiMessage = await callApi(chatHistory);
+                loadingMessage.remove(); // remove "..." message
+                if(newAiMessage) {
+                    addChatMessage('assistant', newAiMessage);
+                    chatHistory.push({ role: "assistant", content: newAiMessage });
+                } else {
+                     addChatMessage('assistant', "抱歉，我好像遇到了一点问题，请稍后再试。");
+                }
+            } catch (error) {
+                console.error("Chat API call failed:", error);
+                loadingMessage.remove();
+                addChatMessage('assistant', "抱歉，连接AI助手时出错，请稍后再试。");
+            }
+        }
+        
+        sendButton.addEventListener('click', handleSendMessage);
+        userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSendMessage(); });
+    });
+    </script>
+</body>
+</html>
